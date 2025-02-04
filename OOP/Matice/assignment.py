@@ -3,7 +3,7 @@ class Matrix:
         for row in array:
             if len(row) != len(array[0]):
                 raise Exception("Matrix Error: invalid number of elements")
-            
+
         self.data = array
         self.num_of_rows = len(array)
         self.num_of_columns = len(array[0])
@@ -41,8 +41,7 @@ class Matrix:
             row_str = ""
             for element in row:
                 row_str += str(element) + " "
-            row_str = row_str.strip() 
-            # Removes space after string https://www.digitalocean.com/community/tutorials/python-remove-spaces-from-string
+            row_str = row_str.strip()
             result.append(row_str)
 
         return "\n".join(result) + "\n"
@@ -53,20 +52,32 @@ class Matrix:
 
         row, column = tup
 
-        if row < 1 or row > self.num_of_rows or column < 1 or column > self.num_of_columns:
-            raise Exception(f"Matrix Error: tuple ({row}, {column}) is out of bounds")
+        if (
+            row < 1 or row > self.num_of_rows or
+            column < 1 or column > self.num_of_columns
+           ):
+            raise Exception(
+                f"Matrix Error: tuple ({row}, {column})is out of bounds"
+            )
 
         return self.data[row - 1][column - 1]
 
-    def __setitem__(self, tup: tuple[int, int], new_value: int | float) -> None:
+    def __setitem__(self, tup: tuple[int, int],
+                    new_value: int | float) -> None:
         if not isinstance(tup, tuple):
             raise Exception("Matrix Error: must be a tuple of two integers")
 
         row, column = tup
 
-        if row < 1 or row > self.num_of_rows or column < 1 or column > self.num_of_columns:
-            raise Exception(f"Matrix Error: tuple ({row}, {column}) is out of bounds")
-        
+        if (
+            row < 1 or row > self.num_of_rows or
+            column < 1 or column > self.num_of_columns
+        ):
+
+            raise Exception(
+                f"Matrix Error: tuple ({row}, {column}) is out of bounds"
+            )
+
         self.data[row - 1][column - 1] = new_value
 
     def transposition(self) -> 'Matrix':
@@ -77,14 +88,11 @@ class Matrix:
             for row in self.data:
                 transposed_row.append(row[column])
             transposed_matrix.append(transposed_row)
-        
+
         return Matrix(transposed_matrix)
 
     def is_squared(self) -> bool:
-        if self.num_of_rows == self.num_of_columns:
-            return True
-
-        return False
+        return self.num_of_rows == self.num_of_columns
 
     def is_symetrical(self) -> bool:
         squared = self.is_squared()
@@ -102,7 +110,7 @@ class Matrix:
         squared = self.is_squared()
         if not squared:
             return False
-        
+
         for row in range(self.num_of_rows):
             if self.data[row][row] != 0:
                 return False
@@ -128,14 +136,14 @@ class Matrix:
 
                 if self.data[column][row] != 0:
                     lower = False
-        
+
         return upper or lower
 
     def is_diagonal(self) -> bool:
         squared = self.is_squared()
         if not squared:
             return False
-        
+
         for row in range(self.num_of_rows):
             for column in range(row + 1, self.num_of_columns):
                 if self.data[row][column] != 0:
@@ -145,7 +153,7 @@ class Matrix:
                     return False
 
         return True
-        
+
     def get_info(self) -> tuple[tuple[int, int], bool, bool, bool, bool, bool]:
         size = self.num_of_rows, self.num_of_columns
         squared = self.is_squared()
@@ -153,15 +161,18 @@ class Matrix:
         antisymetrical = self.is_antisymetrical()
         triangular = self.is_triangular()
         diagonal = self.is_diagonal()
-        
-        return size, squared, symetrical, antisymetrical, triangular, diagonal
 
+        return size, squared, symetrical, antisymetrical, triangular, diagonal
 
     def __eq__(self, other_matrix: object) -> bool:
         if not isinstance(other_matrix, Matrix):
             return False
 
-        if self.num_of_rows != other_matrix.num_of_rows or self.num_of_columns != other_matrix.num_of_columns:
+        if (
+            self.num_of_rows != other_matrix.num_of_rows or
+            self.num_of_columns != other_matrix.num_of_columns
+        ):
+
             return False
 
         for row in range(self.num_of_rows):
@@ -171,14 +182,14 @@ class Matrix:
         return True
 
     def __ne__(self, other_matrix: object) -> bool:
-        if not self == other_matrix:
-            return True
-
-        return False
+        return not self == other_matrix
 
     def __add__(self, other_matrix: 'Matrix') -> 'Matrix':
-        if self.num_of_rows != other_matrix.num_of_rows or self.num_of_columns != other_matrix.num_of_columns:
-            raise Exception(f"Matrix Error: dimensions does not match")
+        if (
+            self.num_of_rows != other_matrix.num_of_rows or
+            self.num_of_columns != other_matrix.num_of_columns
+        ):
+            raise Exception("Matrix Error: dimensions does not match")
 
         new_matrix = []
 
@@ -193,8 +204,11 @@ class Matrix:
         return Matrix(new_matrix)
 
     def __sub__(self, other_matrix: 'Matrix') -> 'Matrix':
-        if self.num_of_rows != other_matrix.num_of_rows or self.num_of_columns != other_matrix.num_of_columns:
-            raise Exception(f"Matrix Error: dimensions does not match")
+        if (
+            self.num_of_rows != other_matrix.num_of_rows or
+            self.num_of_columns != other_matrix.num_of_columns
+        ):
+            raise Exception("Matrix Error: dimensions does not match")
 
         new_matrix = []
 
@@ -210,8 +224,11 @@ class Matrix:
 
     def __mul__(self, other_matrix: 'Matrix') -> 'Matrix':
         if self.num_of_columns != other_matrix.num_of_rows:
-            raise Exception(f"Matrix Error: dimensions does not match, number of columns in first matrix must match number of rows in second matrix")
-
+            raise Exception(
+                "Matrix Error: dimensions do not match, "
+                "number of columns in first matrix "
+                "must match number of rows in second matrix"
+            )
         new_matrix = []
 
         for i in range(self.num_of_rows):
@@ -235,11 +252,28 @@ class Matrix:
                 new_element = element * constant
                 new_row.append(new_element)
             new_matrix.append(new_row)
+
         return Matrix(new_matrix)
 
     def determinant(self) -> int | float:
-        """ Vrati determinant matice """
-        pass
+        if not self.is_squared():
+            raise Exception("Matrix Error: dimensions does not match")
+
+        if self.num_of_rows == 2:
+            return (
+                (self.data[0][0] * self.data[1][1]) -
+                (self.data[0][1] * self.data[1][0])
+            )
+
+        det = 0
+        for column in range(self.num_of_columns):
+            minor_matrix = []
+            for row in self.data[1:]:
+                minor_matrix.append(row[:column] + row[column + 1:])
+            minor_det = Matrix(minor_matrix).determinant()
+            det += ((-1) ** column) * self.data[0][column] * minor_det
+
+        return det
 
     def inverse(self) -> 'Matrix':
         """ Vrati inverzni matici """
